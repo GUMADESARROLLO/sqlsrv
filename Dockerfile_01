@@ -1,0 +1,62 @@
+FROM ubuntu:20.04
+
+# update package list
+RUN apt update --fix-missing
+RUN  DEBIAN_FRONTEND=noninteractive
+RUN ln -snf /usr/share/zoneinfo/America/Managua /etc/localtime && echo America/Jakarta > /etc/timezone
+
+# install curl , git and docker-php-ext-install
+RUN apt-get install -y curl git 
+
+# install apache
+RUN apt-get install -y apache2 
+
+RUN apt install software-properties-common -qy 
+RUN add-apt-repository -y ppa:ondrej/php 
+RUN apt-get update
+
+#RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+
+# install php
+RUN apt-get -y install php7.4 php7.4-dev php7.4-xml mcrypt php7.4-mcrypt -y --allow-unauthenticated
+RUN apt-get install -y libapache2-mod-php7.4 unixodbc-dev
+RUN apt-get install -y unixodbc-dev
+
+# install pre requisites
+RUN apt-get update
+RUN apt-get install -y apt-transport-https
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+RUN curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
+RUN apt-get update
+RUN ACCEPT_EULA=Y apt-get install -y msodbcsql17 mssql-tools
+
+# install driver sqlsrv
+RUN pecl install sqlsrv
+RUN echo "extension=sqlsrv.so" >> /etc/php/7.4/apache2/php.ini
+RUN pecl install pdo_sqlsrv
+RUN echo "extension=pdo_sqlsrv.so" >> /etc/php/7.4/apache2/php.ini
+
+# load driver sqlsrv
+RUN echo "extension=/usr/lib/php/20151012/sqlsrv.so" >> /etc/php/7.4/apache2/php.ini
+RUN echo "extension=/usr/lib/php/20151012/pdo_sqlsrv.so" >> /etc/php/7.4/apache2/php.ini
+RUN echo "extension=/usr/lib/php/20151012/sqlsrv.so" >> /etc/php/7.4/cli/php.ini
+RUN echo "extension=/usr/lib/php/20151012/pdo_sqlsrv.so" >> /etc/php/7.4/cli/php.ini
+
+# install composer
+# COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# install ODBC Driver
+RUN ACCEPT_EULA=Y apt-get install -y msodbcsql17
+RUN apt-get install -y mssql-tools
+RUN echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile
+RUN echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+RUN exec bash
+
+# install locales
+#RUN apt-get install -y locales && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
+
+EXPOSE 80
+
+WORKDIR /var/www/html/
+
+CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]

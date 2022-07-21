@@ -19,6 +19,8 @@ class HomeController extends Controller
     {
         $Articulos = Articulos::getArticulos();        
         return response()->json($Articulos);
+        //echo phpinfo();
+
     }
     public function getArticulosDos() {
 		$obj = Articulos::getArticulosDos();

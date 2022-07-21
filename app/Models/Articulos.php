@@ -11,8 +11,7 @@ class Articulos extends Model
     protected $table = "PRODUCCION.dbo.view_inventario_solicitud";
 
     public static function getArticulos()
-    {
-
+    {        
         return Articulos::all();
     }
     public static function getArticulosDos(){
