@@ -1,7 +1,6 @@
 version: "3.7"
 
-services:
-  
+services:  
   nginx:
     image: nginx:stable-alpine
     container_name: nginx
