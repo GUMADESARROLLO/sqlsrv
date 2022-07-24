@@ -13,10 +13,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-
-Route::get('Articulos', 'HomeController@getArticulos')->name('Articulos');
-Route::get('ArticulosDos', 'HomeController@getArticulosDos')->name('ArticulosDos');
+Route::get('/', 'DashboardController@getHome');
