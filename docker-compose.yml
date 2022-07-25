@@ -1,9 +1,9 @@
 version: "3.7"
 
 services:  
-  nginx:
+  nginx_sqlsrv:
     image: nginx:stable-alpine
-    container_name: nginx
+    container_name: nginx_sqlsrv
     ports:
       - 8000:80
     volumes:
@@ -15,9 +15,9 @@ services:
     networks:
       - networkapp
 
-  mysql:
+  mysql_sqlsrv:
     image: mysql:5.7
-    container_name: mysql
+    container_name: mysql_sqlsrv
     restart: always
     environment:
       MYSQL_DATABASE: db_sqlsrv
@@ -27,17 +27,12 @@ services:
     ports:
       - 33069:3306
     volumes:
-      - vol_sqlsrv:/var/lib/mysql
+      - _vol:/var/lib/mysql
     networks:
       - networkapp
 
   app_sqlsrv:
-    build:
-      args:
-        user: laraveluser
-        uid: 1000
-      context: .
-      dockerfile: ./Dockerfile
+    image: php_7_4_sqlsrv
     container_name: app_sqlsrv
     working_dir: /var/www/html
     volumes:
@@ -51,4 +46,4 @@ networks:
   networkapp:
 
 volumes:
-  vol_sqlsrv:
+  _vol:

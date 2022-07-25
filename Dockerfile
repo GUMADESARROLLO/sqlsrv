@@ -27,9 +27,6 @@ RUN apt-get update -yqq \
 RUN pecl install -f pdo_sqlsrv-${MSSQL_DRIVER_VER} sqlsrv-${MSSQL_DRIVER_VER} \
         && docker-php-ext-enable pdo_sqlsrv sqlsrv
 
-RUN useradd -G www-data,root -u $uid -d /home/$user $user
-RUN mkdir -p /home/$user/.composer && \
-    chown -R $user:$user /home/$user
 
 WORKDIR /var/www/html
 
